@@ -1,3 +1,4 @@
+#![allow(clippy::inline_always)]
 /*
  * Copyright 2018 Google Inc. All rights reserved.
  *

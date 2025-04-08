@@ -738,7 +738,7 @@ impl<'fbb, A: Allocator> FlatBufferBuilder<'fbb, A> {
     #[inline]
     fn align(&mut self, len: usize, alignment: PushAlignment) {
         self.track_min_align(alignment.value());
-        let s = self.used_space() as usize;
+        let s = self.used_space();
         self.make_space(padding_bytes(s + len, alignment.value()));
     }
 

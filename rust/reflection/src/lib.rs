@@ -448,7 +448,7 @@ pub unsafe fn set_field<T: EndianScalar>(
                     start: field_loc,
                     end: field_loc.saturating_add(get_type_size(field_type)),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }
@@ -494,7 +494,7 @@ pub unsafe fn set_string(
                     start: field_loc,
                     end: field_loc.saturating_add(get_type_size(field_type)),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }
@@ -508,7 +508,7 @@ pub unsafe fn set_string(
                     start: string_loc,
                     end: string_loc.saturating_add(SIZE_UOFFSET),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }
@@ -528,7 +528,7 @@ pub unsafe fn set_string(
                         .saturating_add(SIZE_UOFFSET)
                         .saturating_add(len_old.try_into()?),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }
@@ -748,7 +748,7 @@ fn set_any_value_integer(
                     start: field_loc,
                     end: field_loc.saturating_add(get_type_size(base_type)),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }
@@ -839,7 +839,7 @@ fn set_any_value_float(
                     start: field_loc,
                     end: field_loc.saturating_add(get_type_size(base_type)),
                 },
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             },
         ));
     }

@@ -164,13 +164,13 @@ impl core::fmt::Display for InvalidFlatbuffer {
                     position, soffset, error_trace
                 )?;
             }
-            InvalidFlatbuffer::TooManyTables {} => {
+            InvalidFlatbuffer::TooManyTables => {
                 writeln!(f, "Too many tables.")?;
             }
-            InvalidFlatbuffer::ApparentSizeTooLarge {} => {
+            InvalidFlatbuffer::ApparentSizeTooLarge => {
                 writeln!(f, "Apparent size too large.")?;
             }
-            InvalidFlatbuffer::DepthLimitReached {} => {
+            InvalidFlatbuffer::DepthLimitReached => {
                 writeln!(f, "Nested table depth limit reached.")?;
             }
         }
@@ -219,7 +219,7 @@ impl InvalidFlatbuffer {
     fn new_range_oob<T>(start: usize, end: usize) -> Result<T> {
         Err(Self::RangeOutOfBounds {
             range: Range { start, end },
-            error_trace: Default::default(),
+            error_trace: ErrorTrace::default(),
         })
     }
     pub fn new_inconsistent_union<T>(
@@ -229,13 +229,13 @@ impl InvalidFlatbuffer {
         Err(Self::InconsistentUnion {
             field: field.into(),
             field_type: field_type.into(),
-            error_trace: Default::default(),
+            error_trace: ErrorTrace::default(),
         })
     }
     pub fn new_missing_required<T>(required: impl Into<Cow<'static, str>>) -> Result<T> {
         Err(Self::MissingRequiredField {
             required: required.into(),
-            error_trace: Default::default(),
+            error_trace: ErrorTrace::default(),
         })
     }
 }
@@ -252,7 +252,7 @@ fn append_trace<T>(mut res: Result<T>, d: ErrorTraceDetail) -> Result<T> {
         | MissingNullTerminator { error_trace, .. }
         | SignedOffsetOutOfBounds { error_trace, .. } = e
         {
-            error_trace.0.push(d)
+            error_trace.0.push(d);
         }
     }
     res
