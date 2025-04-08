@@ -19,7 +19,7 @@ use core::ptr::write_bytes;
 use crate::endian_scalar::emplace_scalar;
 use crate::primitives::*;
 
-/// VTableWriter compartmentalizes actions needed to create a vtable.
+/// `VTableWriter` compartmentalizes actions needed to create a vtable.
 #[derive(Debug)]
 pub struct VTableWriter<'a> {
     buf: &'a mut [u8],
@@ -27,14 +27,14 @@ pub struct VTableWriter<'a> {
 
 impl<'a> VTableWriter<'a> {
     #[inline(always)]
-    pub fn init(buf: &'a mut [u8]) -> Self {
+    pub const fn init(buf: &'a mut [u8]) -> Self {
         VTableWriter { buf }
     }
 
     /// Writes the vtable length (in bytes) into the vtable.
     ///
     /// Note that callers already need to have computed this to initialize
-    /// a VTableWriter.
+    /// a `VTableWriter`.
     ///
     /// In debug mode, asserts that the length of the underlying data is equal
     /// to the provided value.
@@ -75,13 +75,13 @@ impl<'a> VTableWriter<'a> {
         }
     }
 
-    /// Clears all data in this VTableWriter. Used to cleanly undo a
+    /// Clears all data in this `VTableWriter`. Used to cleanly undo a
     /// vtable write.
     #[inline(always)]
-    pub fn clear(&mut self) {
+    pub const fn clear(&mut self) {
         // This is the closest thing to memset in Rust right now.
         let len = self.buf.len();
-        let p = self.buf.as_mut_ptr() as *mut u8;
+        let p = self.buf.as_mut_ptr();
 
         // Safety:
         // p is byte aligned and of length `len`

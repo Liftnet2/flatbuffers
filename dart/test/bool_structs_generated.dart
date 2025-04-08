@@ -4,7 +4,6 @@
 import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
-
 class Foo {
   Foo._(this._bc, this._bcOffset);
   factory Foo(List<int> bytes) {
@@ -17,15 +16,15 @@ class Foo {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  FooProperties? get myFoo => FooProperties.reader.vTableGetNullable(_bc, _bcOffset, 4);
+  FooProperties? get myFoo =>
+      FooProperties.reader.vTableGetNullable(_bc, _bcOffset, 4);
 
   @override
   String toString() {
-    return 'Foo{myFoo: ${myFoo}}';
+    return 'Foo{myFoo: $myFoo}';
   }
 
-  FooT unpack() => FooT(
-      myFoo: myFoo?.unpack());
+  FooT unpack() => FooT(myFoo: myFoo?.unpack());
 
   static int pack(fb.Builder fbBuilder, FooT? object) {
     if (object == null) return 0;
@@ -36,8 +35,7 @@ class Foo {
 class FooT implements fb.Packable {
   FooPropertiesT? myFoo;
 
-  FooT({
-      this.myFoo});
+  FooT({this.myFoo});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -50,7 +48,7 @@ class FooT implements fb.Packable {
 
   @override
   String toString() {
-    return 'FooT{myFoo: ${myFoo}}';
+    return 'FooT{myFoo: $myFoo}';
   }
 }
 
@@ -58,8 +56,7 @@ class _FooReader extends fb.TableReader<Foo> {
   const _FooReader();
 
   @override
-  Foo createObject(fb.BufferContext bc, int offset) => 
-    Foo._(bc, offset);
+  Foo createObject(fb.BufferContext bc, int offset) => Foo._(bc, offset);
 }
 
 class FooBuilder {
@@ -86,15 +83,14 @@ class FooObjectBuilder extends fb.ObjectBuilder {
 
   FooObjectBuilder({
     FooPropertiesObjectBuilder? myFoo,
-  })
-      : _myFoo = myFoo;
+  }) : _myFoo = myFoo;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
     fbBuilder.startTable(1);
     if (_myFoo != null) {
-      fbBuilder.addStruct(0, _myFoo!.finish(fbBuilder));
+      fbBuilder.addStruct(0, _myFoo.finish(fbBuilder));
     }
     return fbBuilder.endTable();
   }
@@ -107,6 +103,7 @@ class FooObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+
 class FooProperties {
   FooProperties._(this._bc, this._bcOffset);
 
@@ -120,12 +117,10 @@ class FooProperties {
 
   @override
   String toString() {
-    return 'FooProperties{a: ${a}, b: ${b}}';
+    return 'FooProperties{a: $a, b: $b}';
   }
 
-  FooPropertiesT unpack() => FooPropertiesT(
-      a: a,
-      b: b);
+  FooPropertiesT unpack() => FooPropertiesT(a: a, b: b);
 
   static int pack(fb.Builder fbBuilder, FooPropertiesT? object) {
     if (object == null) return 0;
@@ -137,9 +132,7 @@ class FooPropertiesT implements fb.Packable {
   bool a;
   bool b;
 
-  FooPropertiesT({
-      required this.a,
-      required this.b});
+  FooPropertiesT({required this.a, required this.b});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -150,7 +143,7 @@ class FooPropertiesT implements fb.Packable {
 
   @override
   String toString() {
-    return 'FooPropertiesT{a: ${a}, b: ${b}}';
+    return 'FooPropertiesT{a: $a, b: $b}';
   }
 }
 
@@ -161,8 +154,8 @@ class _FooPropertiesReader extends fb.StructReader<FooProperties> {
   int get size => 2;
 
   @override
-  FooProperties createObject(fb.BufferContext bc, int offset) => 
-    FooProperties._(bc, offset);
+  FooProperties createObject(fb.BufferContext bc, int offset) =>
+      FooProperties._(bc, offset);
 }
 
 class FooPropertiesBuilder {
@@ -175,7 +168,6 @@ class FooPropertiesBuilder {
     fbBuilder.putBool(a);
     return fbBuilder.offset;
   }
-
 }
 
 class FooPropertiesObjectBuilder extends fb.ObjectBuilder {
@@ -185,8 +177,7 @@ class FooPropertiesObjectBuilder extends fb.ObjectBuilder {
   FooPropertiesObjectBuilder({
     required bool a,
     required bool b,
-  })
-      : _a = a,
+  })  : _a = a,
         _b = b;
 
   /// Finish building, and store into the [fbBuilder].

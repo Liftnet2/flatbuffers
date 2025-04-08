@@ -18,7 +18,7 @@ use crate::endian_scalar::read_scalar_at;
 use crate::follow::Follow;
 use crate::primitives::*;
 
-/// VTable encapsulates read-only usage of a vtable. It is only to be used
+/// `VTable` encapsulates read-only usage of a vtable. It is only to be used
 /// by generated code.
 #[derive(Debug)]
 pub struct VTable<'a> {
@@ -26,7 +26,7 @@ pub struct VTable<'a> {
     loc: usize,
 }
 
-impl<'a> PartialEq for VTable<'a> {
+impl PartialEq for VTable<'_> {
     fn eq(&self, other: &VTable) -> bool {
         self.as_bytes().eq(other.as_bytes())
     }
@@ -40,7 +40,7 @@ impl<'a> VTable<'a> {
     /// - size of vtable in bytes including size element
     /// - size of object in bytes including the vtable offset
     /// - n fields where n is the number of fields in the table's schema when the code was compiled
-    pub unsafe fn init(buf: &'a [u8], loc: usize) -> Self {
+    pub const unsafe fn init(buf: &'a [u8], loc: usize) -> Self {
         VTable { buf, loc }
     }
 
@@ -93,8 +93,9 @@ impl<'a> VTable<'a> {
     }
 }
 
+#[must_use]
 #[allow(dead_code)]
-pub fn field_index_to_field_offset(field_id: VOffsetT) -> VOffsetT {
+pub const fn field_index_to_field_offset(field_id: VOffsetT) -> VOffsetT {
     // Should correspond to what end_table() below builds up.
     let fixed_fields = 2; // Vtable size and Object Size.
     ((field_id + fixed_fields) * (SIZE_VOFFSET as VOffsetT)) as VOffsetT
@@ -108,8 +109,8 @@ pub fn field_offset_to_field_index(field_o: VOffsetT) -> VOffsetT {
 }
 
 impl<'a> Follow<'a> for VTable<'a> {
-    type Inner = VTable<'a>;
+    type Inner = Self;
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        VTable::init(buf, loc)
+        Self::init(buf, loc)
     }
 }

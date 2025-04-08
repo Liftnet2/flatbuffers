@@ -6,7 +6,6 @@ library my_game;
 import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
-
 class MonsterExtra {
   MonsterExtra._(this._bc, this._bcOffset);
   factory MonsterExtra(List<int> bytes) {
@@ -19,16 +18,36 @@ class MonsterExtra {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  double get d0 => const fb.Float64Reader().vTableGet(_bc, _bcOffset, 4, double.nan);
-  double get d1 => const fb.Float64Reader().vTableGet(_bc, _bcOffset, 6, double.nan);
-  double get d2 => const fb.Float64Reader().vTableGet(_bc, _bcOffset, 8, double.infinity);
-  double get d3 => const fb.Float64Reader().vTableGet(_bc, _bcOffset, 10, double.negativeInfinity);
-  double get f0 => const fb.Float32Reader().vTableGet(_bc, _bcOffset, 12, double.nan);
-  double get f1 => const fb.Float32Reader().vTableGet(_bc, _bcOffset, 14, double.nan);
-  double get f2 => const fb.Float32Reader().vTableGet(_bc, _bcOffset, 16, double.infinity);
-  double get f3 => const fb.Float32Reader().vTableGet(_bc, _bcOffset, 18, double.negativeInfinity);
-  List<double>? get dvec => const fb.ListReader<double>(fb.Float64Reader()).vTableGetNullable(_bc, _bcOffset, 20);
-  List<double>? get fvec => const fb.ListReader<double>(fb.Float32Reader()).vTableGetNullable(_bc, _bcOffset, 22);
+  double get d0 =>
+      const fb.Float64Reader().vTableGet(_bc, _bcOffset, 4, double.nan);
+  double get d1 =>
+      const fb.Float64Reader().vTableGet(_bc, _bcOffset, 6, double.nan);
+  double get d2 =>
+      const fb.Float64Reader().vTableGet(_bc, _bcOffset, 8, double.infinity);
+  double get d3 => const fb.Float64Reader().vTableGet(
+    _bc,
+    _bcOffset,
+    10,
+    double.negativeInfinity,
+  );
+  double get f0 =>
+      const fb.Float32Reader().vTableGet(_bc, _bcOffset, 12, double.nan);
+  double get f1 =>
+      const fb.Float32Reader().vTableGet(_bc, _bcOffset, 14, double.nan);
+  double get f2 =>
+      const fb.Float32Reader().vTableGet(_bc, _bcOffset, 16, double.infinity);
+  double get f3 => const fb.Float32Reader().vTableGet(
+    _bc,
+    _bcOffset,
+    18,
+    double.negativeInfinity,
+  );
+  List<double>? get dvec => const fb.ListReader<double>(
+    fb.Float64Reader(),
+  ).vTableGetNullable(_bc, _bcOffset, 20);
+  List<double>? get fvec => const fb.ListReader<double>(
+    fb.Float32Reader(),
+  ).vTableGetNullable(_bc, _bcOffset, 22);
 
   @override
   String toString() {
@@ -36,16 +55,23 @@ class MonsterExtra {
   }
 
   MonsterExtraT unpack() => MonsterExtraT(
-      d0: d0,
-      d1: d1,
-      d2: d2,
-      d3: d3,
-      f0: f0,
-      f1: f1,
-      f2: f2,
-      f3: f3,
-      dvec: const fb.ListReader<double>(fb.Float64Reader(), lazy: false).vTableGetNullable(_bc, _bcOffset, 20),
-      fvec: const fb.ListReader<double>(fb.Float32Reader(), lazy: false).vTableGetNullable(_bc, _bcOffset, 22));
+    d0: d0,
+    d1: d1,
+    d2: d2,
+    d3: d3,
+    f0: f0,
+    f1: f1,
+    f2: f2,
+    f3: f3,
+    dvec: const fb.ListReader<double>(
+      fb.Float64Reader(),
+      lazy: false,
+    ).vTableGetNullable(_bc, _bcOffset, 20),
+    fvec: const fb.ListReader<double>(
+      fb.Float32Reader(),
+      lazy: false,
+    ).vTableGetNullable(_bc, _bcOffset, 22),
+  );
 
   static int pack(fb.Builder fbBuilder, MonsterExtraT? object) {
     if (object == null) return 0;
@@ -66,23 +92,24 @@ class MonsterExtraT implements fb.Packable {
   List<double>? fvec;
 
   MonsterExtraT({
-      this.d0 = double.nan,
-      this.d1 = double.nan,
-      this.d2 = double.infinity,
-      this.d3 = double.negativeInfinity,
-      this.f0 = double.nan,
-      this.f1 = double.nan,
-      this.f2 = double.infinity,
-      this.f3 = double.negativeInfinity,
-      this.dvec,
-      this.fvec});
+    this.d0 = double.nan,
+    this.d1 = double.nan,
+    this.d2 = double.infinity,
+    this.d3 = double.negativeInfinity,
+    this.f0 = double.nan,
+    this.f1 = double.nan,
+    this.f2 = double.infinity,
+    this.f3 = double.negativeInfinity,
+    this.dvec,
+    this.fvec,
+  });
 
   @override
   int pack(fb.Builder fbBuilder) {
-    final int? dvecOffset = dvec == null ? null
-        : fbBuilder.writeListFloat64(dvec!);
-    final int? fvecOffset = fvec == null ? null
-        : fbBuilder.writeListFloat32(fvec!);
+    final int? dvecOffset =
+        dvec == null ? null : fbBuilder.writeListFloat64(dvec!);
+    final int? fvecOffset =
+        fvec == null ? null : fbBuilder.writeListFloat32(fvec!);
     fbBuilder.startTable(11);
     fbBuilder.addFloat64(0, d0);
     fbBuilder.addFloat64(1, d1);
@@ -107,8 +134,8 @@ class _MonsterExtraReader extends fb.TableReader<MonsterExtra> {
   const _MonsterExtraReader();
 
   @override
-  MonsterExtra createObject(fb.BufferContext bc, int offset) => 
-    MonsterExtra._(bc, offset);
+  MonsterExtra createObject(fb.BufferContext bc, int offset) =>
+      MonsterExtra._(bc, offset);
 }
 
 class MonsterExtraBuilder {
@@ -124,38 +151,47 @@ class MonsterExtraBuilder {
     fbBuilder.addFloat64(0, d0);
     return fbBuilder.offset;
   }
+
   int addD1(double? d1) {
     fbBuilder.addFloat64(1, d1);
     return fbBuilder.offset;
   }
+
   int addD2(double? d2) {
     fbBuilder.addFloat64(2, d2);
     return fbBuilder.offset;
   }
+
   int addD3(double? d3) {
     fbBuilder.addFloat64(3, d3);
     return fbBuilder.offset;
   }
+
   int addF0(double? f0) {
     fbBuilder.addFloat32(4, f0);
     return fbBuilder.offset;
   }
+
   int addF1(double? f1) {
     fbBuilder.addFloat32(5, f1);
     return fbBuilder.offset;
   }
+
   int addF2(double? f2) {
     fbBuilder.addFloat32(6, f2);
     return fbBuilder.offset;
   }
+
   int addF3(double? f3) {
     fbBuilder.addFloat32(7, f3);
     return fbBuilder.offset;
   }
+
   int addDvecOffset(int? offset) {
     fbBuilder.addOffset(8, offset);
     return fbBuilder.offset;
   }
+
   int addFvecOffset(int? offset) {
     fbBuilder.addOffset(9, offset);
     return fbBuilder.offset;
@@ -189,25 +225,24 @@ class MonsterExtraObjectBuilder extends fb.ObjectBuilder {
     double? f3,
     List<double>? dvec,
     List<double>? fvec,
-  })
-      : _d0 = d0,
-        _d1 = d1,
-        _d2 = d2,
-        _d3 = d3,
-        _f0 = f0,
-        _f1 = f1,
-        _f2 = f2,
-        _f3 = f3,
-        _dvec = dvec,
-        _fvec = fvec;
+  }) : _d0 = d0,
+       _d1 = d1,
+       _d2 = d2,
+       _d3 = d3,
+       _f0 = f0,
+       _f1 = f1,
+       _f2 = f2,
+       _f3 = f3,
+       _dvec = dvec,
+       _fvec = fvec;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
-    final int? dvecOffset = _dvec == null ? null
-        : fbBuilder.writeListFloat64(_dvec!);
-    final int? fvecOffset = _fvec == null ? null
-        : fbBuilder.writeListFloat32(_fvec!);
+    final int? dvecOffset =
+        _dvec == null ? null : fbBuilder.writeListFloat64(_dvec);
+    final int? fvecOffset =
+        _fvec == null ? null : fbBuilder.writeListFloat32(_fvec);
     fbBuilder.startTable(11);
     fbBuilder.addFloat64(0, _d0);
     fbBuilder.addFloat64(1, _d1);

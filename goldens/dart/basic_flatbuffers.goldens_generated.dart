@@ -6,7 +6,6 @@ library flatbuffers.goldens;
 import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
-
 class Galaxy {
   Galaxy._(this._bc, this._bcOffset);
   factory Galaxy(List<int> bytes) {
@@ -31,8 +30,7 @@ class _GalaxyReader extends fb.TableReader<Galaxy> {
   const _GalaxyReader();
 
   @override
-  Galaxy createObject(fb.BufferContext bc, int offset) => 
-    Galaxy._(bc, offset);
+  Galaxy createObject(fb.BufferContext bc, int offset) => Galaxy._(bc, offset);
 }
 
 class GalaxyBuilder {
@@ -57,10 +55,7 @@ class GalaxyBuilder {
 class GalaxyObjectBuilder extends fb.ObjectBuilder {
   final int? _numStars;
 
-  GalaxyObjectBuilder({
-    int? numStars,
-  })
-      : _numStars = numStars;
+  GalaxyObjectBuilder({int? numStars}) : _numStars = numStars;
 
   /// Finish building, and store into the [fbBuilder].
   @override
@@ -78,6 +73,7 @@ class GalaxyObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+
 class Universe {
   Universe._(this._bc, this._bcOffset);
   factory Universe(List<int> bytes) {
@@ -91,7 +87,9 @@ class Universe {
   final int _bcOffset;
 
   double get age => const fb.Float64Reader().vTableGet(_bc, _bcOffset, 4, 0.0);
-  List<Galaxy>? get galaxies => const fb.ListReader<Galaxy>(Galaxy.reader).vTableGetNullable(_bc, _bcOffset, 6);
+  List<Galaxy>? get galaxies => const fb.ListReader<Galaxy>(
+    Galaxy.reader,
+  ).vTableGetNullable(_bc, _bcOffset, 6);
 
   @override
   String toString() {
@@ -103,8 +101,8 @@ class _UniverseReader extends fb.TableReader<Universe> {
   const _UniverseReader();
 
   @override
-  Universe createObject(fb.BufferContext bc, int offset) => 
-    Universe._(bc, offset);
+  Universe createObject(fb.BufferContext bc, int offset) =>
+      Universe._(bc, offset);
 }
 
 class UniverseBuilder {
@@ -120,6 +118,7 @@ class UniverseBuilder {
     fbBuilder.addFloat64(0, age);
     return fbBuilder.offset;
   }
+
   int addGalaxiesOffset(int? offset) {
     fbBuilder.addOffset(1, offset);
     return fbBuilder.offset;
@@ -134,18 +133,19 @@ class UniverseObjectBuilder extends fb.ObjectBuilder {
   final double? _age;
   final List<GalaxyObjectBuilder>? _galaxies;
 
-  UniverseObjectBuilder({
-    double? age,
-    List<GalaxyObjectBuilder>? galaxies,
-  })
-      : _age = age,
-        _galaxies = galaxies;
+  UniverseObjectBuilder({double? age, List<GalaxyObjectBuilder>? galaxies})
+    : _age = age,
+      _galaxies = galaxies;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
-    final int? galaxiesOffset = _galaxies == null ? null
-        : fbBuilder.writeList(_galaxies!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    final int? galaxiesOffset =
+        _galaxies == null
+            ? null
+            : fbBuilder.writeList(
+              _galaxies.map((b) => b.getOrCreateOffset(fbBuilder)).toList(),
+            );
     fbBuilder.startTable(2);
     fbBuilder.addFloat64(0, _age);
     fbBuilder.addOffset(1, galaxiesOffset);

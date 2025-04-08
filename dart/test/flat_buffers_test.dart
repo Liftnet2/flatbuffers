@@ -923,10 +923,10 @@ class ListOfEnumsTest {
       example3.OptionsEnum.C
     ]);
     var bytes = mytable.toBytes();
-    var mytable_read = example3.MyTable(bytes);
-    expect(mytable_read.options![0].value, example3.OptionsEnum.A.value);
-    expect(mytable_read.options![1].value, example3.OptionsEnum.B.value);
-    expect(mytable_read.options![2].value, example3.OptionsEnum.C.value);
+    var mytableRead = example3.MyTable(bytes);
+    expect(mytableRead.options![0].value, example3.OptionsEnum.A.value);
+    expect(mytableRead.options![1].value, example3.OptionsEnum.B.value);
+    expect(mytableRead.options![2].value, example3.OptionsEnum.C.value);
   }
 }
 
@@ -936,8 +936,8 @@ class BoolInStructTest {
     var mystruct = example4.FooObjectBuilder(
         myFoo: example4.FooPropertiesObjectBuilder(a: true, b: false));
     var bytes = mystruct.toBytes();
-    var mystruct_read = example4.Foo(bytes);
-    expect(mystruct_read.myFoo!.a, true);
-    expect(mystruct_read.myFoo!.b, false);
+    var mystructRead = example4.Foo(bytes);
+    expect(mystructRead.myFoo!.a, true);
+    expect(mystructRead.myFoo!.b, false);
   }
 }

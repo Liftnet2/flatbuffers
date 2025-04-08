@@ -123,11 +123,11 @@ impl<'a, T: Follow<'a> + 'a> Vector<'a, T> {
                 Ordering::Equal => return Some(value),
                 Ordering::Less => left = mid + 1,
                 Ordering::Greater => {
-                  if mid == 0 {
-                    return None;
-                  }
-                  right = mid - 1;
-                },
+                    if mid == 0 {
+                        return None;
+                    }
+                    right = mid - 1;
+                }
             }
         }
 

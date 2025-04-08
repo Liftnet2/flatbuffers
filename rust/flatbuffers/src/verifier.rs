@@ -269,7 +269,7 @@ fn trace_field<T>(res: Result<T>, field_name: Cow<'static, str>, position: usize
     )
 }
 
-/// Adds a TableField trace detail if `res` is a data error.
+/// Adds a `TableField` trace detail if `res` is a data error.
 fn trace_elem<T>(res: Result<T>, index: usize, position: usize) -> Result<T> {
     append_trace(res, ErrorTraceDetail::VectorElement { index, position })
 }
@@ -314,7 +314,8 @@ pub struct Verifier<'opts, 'buf> {
 }
 
 impl<'opts, 'buf> Verifier<'opts, 'buf> {
-    pub fn new(opts: &'opts VerifierOptions, buffer: &'buf [u8]) -> Self {
+    #[must_use]
+    pub const fn new(opts: &'opts VerifierOptions, buffer: &'buf [u8]) -> Self {
         Self {
             opts,
             buffer,
@@ -325,7 +326,7 @@ impl<'opts, 'buf> Verifier<'opts, 'buf> {
     }
     /// Resets verifier internal state.
     #[inline]
-    pub fn reset(&mut self) {
+    pub const fn reset(&mut self) {
         self.depth = 0;
         self.num_tables = 0;
         self.num_tables = 0;
@@ -348,7 +349,7 @@ impl<'opts, 'buf> Verifier<'opts, 'buf> {
             Err(InvalidFlatbuffer::Unaligned {
                 unaligned_type: Cow::Borrowed(core::any::type_name::<T>()),
                 position: pos,
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             })
         }
     }
@@ -414,7 +415,7 @@ impl<'opts, 'buf> Verifier<'opts, 'buf> {
         Err(InvalidFlatbuffer::SignedOffsetOutOfBounds {
             soffset: offset,
             position: pos,
-            error_trace: Default::default(),
+            error_trace: ErrorTrace::default(),
         })
     }
     #[inline]
@@ -489,7 +490,7 @@ impl<'ver, 'opts, 'buf> TableVerifier<'ver, 'opts, 'buf> {
     }
 
     #[inline]
-    pub fn verifier(&mut self) -> &mut Verifier<'opts, 'buf> {
+    pub const fn verifier(&mut self) -> &mut Verifier<'opts, 'buf> {
         self.verifier
     }
 
@@ -560,10 +561,14 @@ impl<'ver, 'opts, 'buf> TableVerifier<'ver, 'opts, 'buf> {
                 )?;
                 Ok(self)
             }
-            _ => InvalidFlatbuffer::new_inconsistent_union(key_field_name.into(), val_field_name.into()),
+            _ => InvalidFlatbuffer::new_inconsistent_union(
+                key_field_name.into(),
+                val_field_name.into(),
+            ),
         }
     }
-    pub fn finish(self) -> &'ver mut Verifier<'opts, 'buf> {
+    #[must_use]
+    pub const fn finish(self) -> &'ver mut Verifier<'opts, 'buf> {
         self.verifier.depth -= 1;
         self.verifier
     }
@@ -652,23 +657,23 @@ impl<T: Verifiable> Verifiable for Vector<'_, ForwardsUOffset<T>> {
     }
 }
 
-impl<'a> Verifiable for &'a str {
+impl Verifiable for &str {
     #[inline]
     fn run_verifier(v: &mut Verifier, pos: usize) -> Result<()> {
         let range = verify_vector_range::<u8>(v, pos)?;
-        let has_null_terminator = v.buffer.get(range.end).map(|&b| b == 0).unwrap_or(false);
+        let has_null_terminator = v.buffer.get(range.end).is_some_and(|&b| b == 0);
         let s = core::str::from_utf8(&v.buffer[range.clone()]);
         if let Err(error) = s {
             return Err(InvalidFlatbuffer::Utf8Error {
                 error,
                 range,
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             });
         }
         if !v.opts.ignore_missing_null_terminator && !has_null_terminator {
             return Err(InvalidFlatbuffer::MissingNullTerminator {
                 range,
-                error_trace: Default::default(),
+                error_trace: ErrorTrace::default(),
             });
         }
         Ok(())
@@ -680,7 +685,7 @@ macro_rules! impl_verifiable_for {
     ($T: ty) => {
         impl Verifiable for $T {
             #[inline]
-            fn run_verifier<'opts, 'buf>(v: &mut Verifier<'opts, 'buf>, pos: usize) -> Result<()> {
+            fn run_verifier(v: &mut Verifier<'_, '_>, pos: usize) -> Result<()> {
                 v.in_buffer::<$T>(pos)
             }
         }

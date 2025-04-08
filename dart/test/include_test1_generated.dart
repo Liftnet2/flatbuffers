@@ -4,8 +4,8 @@
 import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
-
-import './include_test2_my_game.other_name_space_generated.dart' as my_game_other_name_space;
+import './include_test2_my_game.other_name_space_generated.dart'
+    as my_game_other_name_space;
 
 class TableA {
   TableA._(this._bc, this._bcOffset);
@@ -19,15 +19,16 @@ class TableA {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  my_game_other_name_space.TableB? get b => my_game_other_name_space.TableB.reader.vTableGetNullable(_bc, _bcOffset, 4);
+  my_game_other_name_space.TableB? get b =>
+      my_game_other_name_space.TableB.reader
+          .vTableGetNullable(_bc, _bcOffset, 4);
 
   @override
   String toString() {
-    return 'TableA{b: ${b}}';
+    return 'TableA{b: $b}';
   }
 
-  TableAT unpack() => TableAT(
-      b: b?.unpack());
+  TableAT unpack() => TableAT(b: b?.unpack());
 
   static int pack(fb.Builder fbBuilder, TableAT? object) {
     if (object == null) return 0;
@@ -38,8 +39,7 @@ class TableA {
 class TableAT implements fb.Packable {
   my_game_other_name_space.TableBT? b;
 
-  TableAT({
-      this.b});
+  TableAT({this.b});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -51,7 +51,7 @@ class TableAT implements fb.Packable {
 
   @override
   String toString() {
-    return 'TableAT{b: ${b}}';
+    return 'TableAT{b: $b}';
   }
 }
 
@@ -59,8 +59,7 @@ class _TableAReader extends fb.TableReader<TableA> {
   const _TableAReader();
 
   @override
-  TableA createObject(fb.BufferContext bc, int offset) => 
-    TableA._(bc, offset);
+  TableA createObject(fb.BufferContext bc, int offset) => TableA._(bc, offset);
 }
 
 class TableABuilder {
@@ -87,8 +86,7 @@ class TableAObjectBuilder extends fb.ObjectBuilder {
 
   TableAObjectBuilder({
     my_game_other_name_space.TableBObjectBuilder? b,
-  })
-      : _b = b;
+  }) : _b = b;
 
   /// Finish building, and store into the [fbBuilder].
   @override

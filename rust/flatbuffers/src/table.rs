@@ -18,7 +18,7 @@ use crate::follow::Follow;
 use crate::primitives::*;
 use crate::vtable::VTable;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct Table<'a> {
     buf: &'a [u8],
     loc: usize,

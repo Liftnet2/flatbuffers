@@ -729,7 +729,7 @@ class Builder {
 
   @pragma('vm:prefer-inline')
   void _writeUTFString(String value) {
-    final bytes = utf8.encode(value) as Uint8List;
+    final bytes = utf8.encode(value);
     final length = bytes.length;
     _prepare(4, 1, additionalBytes: length + 1);
     _setUint32AtTail(_tail, length);

@@ -6,7 +6,6 @@ library keyword_test;
 import 'dart:typed_data' show Uint8List;
 import 'package:flat_buffers/flat_buffers.dart' as fb;
 
-
 enum Abc {
   $void(0),
   where(1),
@@ -17,10 +16,14 @@ enum Abc {
 
   factory Abc.fromValue(int value) {
     switch (value) {
-      case 0: return Abc.$void;
-      case 1: return Abc.where;
-      case 2: return Abc.stackalloc;
-      default: throw StateError('Invalid value $value for bit flag enum');
+      case 0:
+        return Abc.$void;
+      case 1:
+        return Abc.where;
+      case 2:
+        return Abc.stackalloc;
+      default:
+        throw StateError('Invalid value $value for bit flag enum');
     }
   }
 
@@ -51,8 +54,10 @@ enum Public {
 
   factory Public.fromValue(int value) {
     switch (value) {
-      case 0: return Public.NONE;
-      default: throw StateError('Invalid value $value for bit flag enum');
+      case 0:
+        return Public.NONE;
+      default:
+        throw StateError('Invalid value $value for bit flag enum');
     }
   }
 
@@ -85,10 +90,14 @@ enum KeywordsInUnionTypeId {
 
   factory KeywordsInUnionTypeId.fromValue(int value) {
     switch (value) {
-      case 0: return KeywordsInUnionTypeId.NONE;
-      case 1: return KeywordsInUnionTypeId.$static;
-      case 2: return KeywordsInUnionTypeId.internal;
-      default: throw StateError('Invalid value $value for bit flag enum');
+      case 0:
+        return KeywordsInUnionTypeId.NONE;
+      case 1:
+        return KeywordsInUnionTypeId.$static;
+      case 2:
+        return KeywordsInUnionTypeId.internal;
+      default:
+        throw StateError('Invalid value $value for bit flag enum');
     }
   }
 
@@ -97,7 +106,8 @@ enum KeywordsInUnionTypeId {
 
   static const int minValue = 0;
   static const int maxValue = 2;
-  static const fb.Reader<KeywordsInUnionTypeId> reader = _KeywordsInUnionTypeIdReader();
+  static const fb.Reader<KeywordsInUnionTypeId> reader =
+      _KeywordsInUnionTypeIdReader();
 }
 
 class _KeywordsInUnionTypeIdReader extends fb.Reader<KeywordsInUnionTypeId> {
@@ -123,21 +133,21 @@ class KeywordsInTable {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  Abc get $is => Abc.fromValue(const fb.Int32Reader().vTableGet(_bc, _bcOffset, 4, 0));
-  Public get private => Public.fromValue(const fb.Int32Reader().vTableGet(_bc, _bcOffset, 6, 0));
+  Abc get $is =>
+      Abc.fromValue(const fb.Int32Reader().vTableGet(_bc, _bcOffset, 4, 0));
+  Public get private =>
+      Public.fromValue(const fb.Int32Reader().vTableGet(_bc, _bcOffset, 6, 0));
   int get type => const fb.Int32Reader().vTableGet(_bc, _bcOffset, 8, 0);
-  bool get $default => const fb.BoolReader().vTableGet(_bc, _bcOffset, 10, false);
+  bool get $default =>
+      const fb.BoolReader().vTableGet(_bc, _bcOffset, 10, false);
 
   @override
   String toString() {
-    return 'KeywordsInTable{\$is: ${$is}, private: ${private}, type: ${type}, \$default: ${$default}}';
+    return 'KeywordsInTable{\$is: ${$is}, private: $private, type: $type, \$default: ${$default}}';
   }
 
   KeywordsInTableT unpack() => KeywordsInTableT(
-      $is: $is,
-      private: private,
-      type: type,
-      $default: $default);
+      $is: $is, private: private, type: type, $default: $default);
 
   static int pack(fb.Builder fbBuilder, KeywordsInTableT? object) {
     if (object == null) return 0;
@@ -151,8 +161,8 @@ class KeywordsInTableT implements fb.Packable {
   int type;
   bool $default;
 
-  KeywordsInTableT({
-      this.$is = Abc.$void,
+  KeywordsInTableT(
+      {this.$is = Abc.$void,
       this.private = Public.NONE,
       this.type = 0,
       this.$default = false});
@@ -169,7 +179,7 @@ class KeywordsInTableT implements fb.Packable {
 
   @override
   String toString() {
-    return 'KeywordsInTableT{\$is: ${$is}, private: ${private}, type: ${type}, \$default: ${$default}}';
+    return 'KeywordsInTableT{\$is: ${$is}, private: $private, type: $type, \$default: ${$default}}';
   }
 }
 
@@ -177,8 +187,8 @@ class _KeywordsInTableReader extends fb.TableReader<KeywordsInTable> {
   const _KeywordsInTableReader();
 
   @override
-  KeywordsInTable createObject(fb.BufferContext bc, int offset) => 
-    KeywordsInTable._(bc, offset);
+  KeywordsInTable createObject(fb.BufferContext bc, int offset) =>
+      KeywordsInTable._(bc, offset);
 }
 
 class KeywordsInTableBuilder {
@@ -194,14 +204,17 @@ class KeywordsInTableBuilder {
     fbBuilder.addInt32(0, $is?.value);
     return fbBuilder.offset;
   }
+
   int addPrivate(Public? private) {
     fbBuilder.addInt32(1, private?.value);
     return fbBuilder.offset;
   }
+
   int addType(int? type) {
     fbBuilder.addInt32(2, type);
     return fbBuilder.offset;
   }
+
   int addDefault(bool? $default) {
     fbBuilder.addBool(3, $default);
     return fbBuilder.offset;
@@ -223,8 +236,7 @@ class KeywordsInTableObjectBuilder extends fb.ObjectBuilder {
     Public? private,
     int? type,
     bool? $default,
-  })
-      : _$is = $is,
+  })  : _$is = $is,
         _private = private,
         _type = type,
         _$default = $default;
@@ -248,6 +260,7 @@ class KeywordsInTableObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+
 class Table2 {
   Table2._(this._bc, this._bcOffset);
   factory Table2(List<int> bytes) {
@@ -260,23 +273,25 @@ class Table2 {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  KeywordsInUnionTypeId? get typeType => KeywordsInUnionTypeId._createOrNull(const fb.Uint8Reader().vTableGetNullable(_bc, _bcOffset, 4));
+  KeywordsInUnionTypeId? get typeType => KeywordsInUnionTypeId._createOrNull(
+      const fb.Uint8Reader().vTableGetNullable(_bc, _bcOffset, 4));
   dynamic get type {
     switch (typeType?.value) {
-      case 1: return KeywordsInTable.reader.vTableGetNullable(_bc, _bcOffset, 6);
-      case 2: return KeywordsInTable.reader.vTableGetNullable(_bc, _bcOffset, 6);
-      default: return null;
+      case 1:
+        return KeywordsInTable.reader.vTableGetNullable(_bc, _bcOffset, 6);
+      case 2:
+        return KeywordsInTable.reader.vTableGetNullable(_bc, _bcOffset, 6);
+      default:
+        return null;
     }
   }
 
   @override
   String toString() {
-    return 'Table2{typeType: ${typeType}, type: ${type}}';
+    return 'Table2{typeType: $typeType, type: $type}';
   }
 
-  Table2T unpack() => Table2T(
-      typeType: typeType,
-      type: type);
+  Table2T unpack() => Table2T(typeType: typeType, type: type);
 
   static int pack(fb.Builder fbBuilder, Table2T? object) {
     if (object == null) return 0;
@@ -288,9 +303,7 @@ class Table2T implements fb.Packable {
   KeywordsInUnionTypeId? typeType;
   dynamic type;
 
-  Table2T({
-      this.typeType,
-      this.type});
+  Table2T({this.typeType, this.type});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -303,7 +316,7 @@ class Table2T implements fb.Packable {
 
   @override
   String toString() {
-    return 'Table2T{typeType: ${typeType}, type: ${type}}';
+    return 'Table2T{typeType: $typeType, type: $type}';
   }
 }
 
@@ -311,8 +324,7 @@ class _Table2Reader extends fb.TableReader<Table2> {
   const _Table2Reader();
 
   @override
-  Table2 createObject(fb.BufferContext bc, int offset) => 
-    Table2._(bc, offset);
+  Table2 createObject(fb.BufferContext bc, int offset) => Table2._(bc, offset);
 }
 
 class Table2Builder {
@@ -328,6 +340,7 @@ class Table2Builder {
     fbBuilder.addUint8(0, typeType?.value);
     return fbBuilder.offset;
   }
+
   int addTypeOffset(int? offset) {
     fbBuilder.addOffset(1, offset);
     return fbBuilder.offset;
@@ -345,8 +358,7 @@ class Table2ObjectBuilder extends fb.ObjectBuilder {
   Table2ObjectBuilder({
     KeywordsInUnionTypeId? typeType,
     dynamic type,
-  })
-      : _typeType = typeType,
+  })  : _typeType = typeType,
         _type = type;
 
   /// Finish building, and store into the [fbBuilder].
