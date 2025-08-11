@@ -727,7 +727,7 @@ class RustGenerator : public BaseGenerator {
       code_ += "mod bitflags_{{ENUM_NAMESPACE}} {";
       code_ += "  flatbuffers::bitflags::bitflags! {";
       GenComment(enum_def.doc_comment, "    ");
-      code_ += "    #[derive(Default, Debug, Clone, Copy, PartialEq)]";
+      code_ += "    #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]";
       code_ += "    {{ACCESS_TYPE}} struct {{ENUM_TY}}: {{BASE_TYPE}} {";
       ForAllEnumValues1(enum_def, [&](const EnumVal &ev) {
         this->GenComment(ev.doc_comment, "    ");
@@ -770,8 +770,7 @@ class RustGenerator : public BaseGenerator {
       // is put into a struct, though this isn't documented behavior, it is
       // needed to derive defaults in struct objects.
       code_ +=
-          "#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, "
-          "Default)]";
+          "#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default)]";
       code_ += "#[repr(transparent)]";
       code_ += "{{ACCESS_TYPE}} struct {{ENUM_TY}}(pub {{BASE_TYPE}});";
       code_ += "#[allow(non_upper_case_globals)]";
