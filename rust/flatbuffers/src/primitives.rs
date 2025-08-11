@@ -21,6 +21,7 @@ use core::ops::Deref;
 use crate::endian_scalar::{emplace_scalar, read_scalar, read_scalar_at};
 use crate::follow::Follow;
 use crate::push::Push;
+use serde::{Deserialize, Serialize};
 
 pub const FLATBUFFERS_MAX_BUFFER_SIZE: usize = (1u64 << 31) as usize;
 
@@ -59,19 +60,19 @@ pub type UOffsetT = u32;
 pub type VOffsetT = u16;
 
 /// TableFinishedWIPOffset marks a WIPOffset as being for a finished table.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct TableFinishedWIPOffset {}
 
 /// TableUnfinishedWIPOffset marks a WIPOffset as being for an unfinished table.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct TableUnfinishedWIPOffset {}
 
 /// UnionWIPOffset marks a WIPOffset as being for a union value.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct UnionWIPOffset {}
 
 /// VTableWIPOffset marks a WIPOffset as being for a vtable.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct VTableWIPOffset {}
 
 /// WIPOffset contains an UOffsetT with a special meaning: it is the location of

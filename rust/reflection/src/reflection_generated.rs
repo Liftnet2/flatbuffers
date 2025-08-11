@@ -55,7 +55,7 @@ pub mod reflection {
         BaseType::MaxBaseType,
     ];
 
-    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize)]
     #[repr(transparent)]
     pub struct BaseType(pub i8);
     #[allow(non_upper_case_globals)]
@@ -243,7 +243,7 @@ pub mod reflection {
 
     impl flatbuffers::SimpleToVerifyInSlice for AdvancedFeatures {}
     pub enum TypeOffset {}
-    #[derive(Copy, Clone, PartialEq)]
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 
     pub struct Type<'a> {
         pub _tab: flatbuffers::Table<'a>,
@@ -1163,7 +1163,7 @@ pub mod reflection {
         }
     }
     pub enum FieldOffset {}
-    #[derive(Copy, Clone, PartialEq)]
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 
     pub struct Field<'a> {
         pub _tab: flatbuffers::Table<'a>,
@@ -1586,8 +1586,7 @@ pub mod reflection {
         }
     }
     pub enum ObjectOffset {}
-    #[derive(Copy, Clone, PartialEq)]
-
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
     pub struct Object<'a> {
         pub _tab: flatbuffers::Table<'a>,
     }
@@ -2164,8 +2163,7 @@ pub mod reflection {
         }
     }
     pub enum ServiceOffset {}
-    #[derive(Copy, Clone, PartialEq)]
-
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
     pub struct Service<'a> {
         pub _tab: flatbuffers::Table<'a>,
     }
@@ -2429,7 +2427,7 @@ pub mod reflection {
         }
     }
     pub enum SchemaFileOffset {}
-    #[derive(Copy, Clone, PartialEq)]
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 
     /// File specific information.
     /// Symbols declared within a file may be recovered by iterating over all
@@ -2599,8 +2597,7 @@ pub mod reflection {
         }
     }
     pub enum SchemaOffset {}
-    #[derive(Copy, Clone, PartialEq)]
-
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
     pub struct Schema<'a> {
         pub _tab: flatbuffers::Table<'a>,
     }
