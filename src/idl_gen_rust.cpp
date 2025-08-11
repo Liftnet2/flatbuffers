@@ -2218,7 +2218,7 @@ class RustGenerator : public BaseGenerator {
 
     // Generate the native object.
     code_ += "#[non_exhaustive]";
-    code_ += "#[derive(Debug, Clone, PartialEq)]";
+    code_ += "#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]";
     code_ += "{{ACCESS_TYPE}} struct {{STRUCT_OTY}} {";
     ForAllObjectTableFields(table, [&](const FieldDef &field) {
       // Union objects combine both the union discriminant and value, so we
@@ -2625,7 +2625,7 @@ class RustGenerator : public BaseGenerator {
     // hold for PartialOrd/Ord.
     code_ += "// struct {{STRUCT_TY}}, aligned to {{ALIGN}}";
     code_ += "#[repr(transparent)]";
-    code_ += "#[derive(Clone, Copy, PartialEq)]";
+    code_ += "#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]";
     code_ += "{{ACCESS_TYPE}} struct {{STRUCT_TY}}(pub [u8; {{STRUCT_SIZE}}]);";
     code_ += "impl Default for {{STRUCT_TY}} { ";
     code_ += "  fn default() -> Self { ";
@@ -2884,7 +2884,7 @@ class RustGenerator : public BaseGenerator {
     // Generate Struct Object.
     if (parser_.opts.generate_object_based_api) {
       // Struct declaration
-      code_ += "#[derive(Debug, Clone, PartialEq, Default)]";
+      code_ += "#[derive(Debug, Clone, PartialEq, Default, Eq, Hash, Serialize, Deserialize)]";
       code_ += "{{ACCESS_TYPE}} struct {{STRUCT_OTY}} {";
       ForAllStructFields(struct_def, [&](const FieldDef &field) {
         (void)field;  // unused.
