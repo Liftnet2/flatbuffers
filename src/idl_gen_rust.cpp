@@ -1645,7 +1645,7 @@ class RustGenerator : public BaseGenerator {
     // Generate an offset type, the base type, the Follow impl, and the
     // init_from_table impl.
     code_ += "{{ACCESS_TYPE}} enum {{STRUCT_TY}}Offset {}";
-    code_ += "#[derive(Copy, Clone, PartialEq)]";
+    code_ += "#[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]";
     code_ += "";
 
     GenComment(struct_def.doc_comment);
