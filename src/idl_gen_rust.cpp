@@ -930,7 +930,7 @@ class RustGenerator : public BaseGenerator {
     code_ += "#[allow(clippy::upper_case_acronyms)]";  // NONE's spelling is
                                                        // intended.
     code_ += "#[non_exhaustive]";
-    code_ += "#[derive(Debug, Clone, PartialEq)]";
+    code_ += "#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]";
     code_ += "{{ACCESS_TYPE}} enum {{ENUM_OTY}} {";
     code_ += "  NONE,";
     ForAllUnionObjectVariantsBesidesNone(enum_def, [&] {
