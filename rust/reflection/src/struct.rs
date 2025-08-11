@@ -16,7 +16,7 @@
 
 use flatbuffers::Follow;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Struct<'a> {
     buf: &'a [u8],
     loc: usize,

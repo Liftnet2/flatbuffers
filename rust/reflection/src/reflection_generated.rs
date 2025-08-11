@@ -601,7 +601,7 @@ pub mod reflection {
         }
     }
     pub enum EnumValOffset {}
-    #[derive(Copy, Clone, PartialEq)]
+    #[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 
     pub struct EnumVal<'a> {
         pub _tab: flatbuffers::Table<'a>,
