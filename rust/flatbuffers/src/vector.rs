@@ -26,7 +26,7 @@ use crate::follow::Follow;
 use crate::primitives::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Vector<'a, T: 'a>(&'a [u8], usize, PhantomData<T>);
 
 impl<'a, T: 'a> Default for Vector<'a, T> {
