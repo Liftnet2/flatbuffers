@@ -1,5 +1,5 @@
 use crate::follow::Follow;
-use crate::{ForwardsUOffset, SOffsetT, SkipSizePrefix, UOffsetT, VOffsetT, Vector, SIZE_UOFFSET};
+use crate::{ForwardsUOffset, SIZE_UOFFSET, SOffsetT, SkipSizePrefix, UOffsetT, VOffsetT, Vector};
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 use core::ops::Range;
@@ -343,7 +343,7 @@ impl<'opts, 'buf> Verifier<'opts, 'buf> {
     /// Note this does not impact soundness as this crate does not assume alignment of structs
     #[inline]
     pub fn is_aligned<T>(&self, pos: usize) -> Result<()> {
-        if pos % core::mem::align_of::<T>() == 0 {
+        if pos.is_multiple_of(core::mem::align_of::<T>()) {
             Ok(())
         } else {
             Err(InvalidFlatbuffer::Unaligned {

@@ -17,8 +17,9 @@
 use crate::follow::Follow;
 use crate::primitives::*;
 use crate::vtable::VTable;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Table<'a> {
     buf: &'a [u8],
     loc: usize,
@@ -62,11 +63,13 @@ impl<'a> Table<'a> {
         slot_byte_loc: VOffsetT,
         default: Option<T::Inner>,
     ) -> Option<T::Inner> {
-        let o = self.vtable().get(slot_byte_loc) as usize;
-        if o == 0 {
-            return default;
+        unsafe {
+            let o = self.vtable().get(slot_byte_loc) as usize;
+            if o == 0 {
+                return default;
+            }
+            Some(<T>::follow(self.buf, self.loc + o))
         }
-        Some(<T>::follow(self.buf, self.loc + o))
     }
 }
 

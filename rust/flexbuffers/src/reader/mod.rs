@@ -26,7 +26,7 @@ mod serialize;
 mod vector;
 pub use de::DeserializationError;
 pub use iter::ReaderIterator;
-pub use map::{MapReader, MapReaderIndexer};
+pub use map::MapReader;
 pub use vector::VectorReader;
 
 /// All the possible errors when reading a flexbuffer.
@@ -429,7 +429,7 @@ impl<B: Buffer> Reader<B> {
             .buffer
             .get(self.address..self.address + self.width.n_bytes());
         match self.width {
-            BitWidth::W8 => cursor.map(|s| s[0] as u8).map(Into::into),
+            BitWidth::W8 => cursor.map(|s| s[0]).map(Into::into),
             BitWidth::W16 => cursor
                 .and_then(|s| s.try_into().ok())
                 .map(<u16>::from_le_bytes)

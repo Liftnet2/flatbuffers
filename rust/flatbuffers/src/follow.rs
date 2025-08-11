@@ -51,13 +51,13 @@ impl<'a, T: Follow<'a> + 'a> FollowStart<T> {
     /// `buf[loc..]` must contain a valid value of `T`
     #[inline]
     pub unsafe fn self_follow(&'a self, buf: &'a [u8], loc: usize) -> T::Inner {
-        T::follow(buf, loc)
+        unsafe { T::follow(buf, loc) }
     }
 }
 impl<'a, T: Follow<'a>> Follow<'a> for FollowStart<T> {
     type Inner = T::Inner;
     #[inline]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        T::follow(buf, loc)
+        unsafe { T::follow(buf, loc) }
     }
 }

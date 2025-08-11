@@ -24,7 +24,9 @@ use core::str::from_utf8_unchecked;
 use crate::endian_scalar::read_scalar_at;
 use crate::follow::Follow;
 use crate::primitives::*;
+use serde::{Deserialize, Serialize};
 
+#[derive(PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Vector<'a, T: 'a>(&'a [u8], usize, PhantomData<T>);
 
 impl<'a, T: 'a> Default for Vector<'a, T> {
@@ -36,16 +38,6 @@ impl<'a, T: 'a> Default for Vector<'a, T> {
             0,
             Default::default(),
         )
-    }
-}
-
-impl<'a, T> Debug for Vector<'a, T>
-where
-    T: 'a + Follow<'a>,
-    <T as Follow<'a>>::Inner: Debug,
-{
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        f.debug_list().entries(self.iter()).finish()
     }
 }
 
@@ -144,29 +136,35 @@ impl<'a, T: Follow<'a> + 'a> Vector<'a, T> {
 ///
 /// `buf` must contain a value of T at `loc` and have alignment of 1
 pub unsafe fn follow_cast_ref<'a, T: Sized + 'a>(buf: &'a [u8], loc: usize) -> &'a T {
-    assert_eq!(align_of::<T>(), 1);
-    let sz = size_of::<T>();
-    let buf = &buf[loc..loc + sz];
-    let ptr = buf.as_ptr() as *const T;
-    // SAFETY
-    // buf contains a value at loc of type T and T has no alignment requirements
-    &*ptr
+    unsafe {
+        assert_eq!(align_of::<T>(), 1);
+        let sz = size_of::<T>();
+        let buf = &buf[loc..loc + sz];
+        let ptr = buf.as_ptr() as *const T;
+        // SAFETY
+        // buf contains a value at loc of type T and T has no alignment requirements
+        &*ptr
+    }
 }
 
 impl<'a> Follow<'a> for &'a str {
     type Inner = &'a str;
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        let len = read_scalar_at::<UOffsetT>(buf, loc) as usize;
-        let slice = &buf[loc + SIZE_UOFFSET..loc + SIZE_UOFFSET + len];
-        from_utf8_unchecked(slice)
+        unsafe {
+            let len = read_scalar_at::<UOffsetT>(buf, loc) as usize;
+            let slice = &buf[loc + SIZE_UOFFSET..loc + SIZE_UOFFSET + len];
+            from_utf8_unchecked(slice)
+        }
     }
 }
 
 impl<'a> Follow<'a> for &'a [u8] {
     type Inner = &'a [u8];
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        let len = read_scalar_at::<UOffsetT>(buf, loc) as usize;
-        &buf[loc + SIZE_UOFFSET..loc + SIZE_UOFFSET + len]
+        unsafe {
+            let len = read_scalar_at::<UOffsetT>(buf, loc) as usize;
+            &buf[loc + SIZE_UOFFSET..loc + SIZE_UOFFSET + len]
+        }
     }
 }
 
@@ -174,7 +172,7 @@ impl<'a> Follow<'a> for &'a [u8] {
 impl<'a, T: Follow<'a> + 'a> Follow<'a> for Vector<'a, T> {
     type Inner = Vector<'a, T>;
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Vector::new(buf, loc)
+        unsafe { Vector::new(buf, loc) }
     }
 }
 
@@ -318,24 +316,5 @@ impl<'a, T: Follow<'a> + 'a> IntoIterator for &Vector<'a, T> {
     type IntoIter = VectorIter<'a, T>;
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
-    }
-}
-
-#[cfg(feature = "serialize")]
-impl<'a, T> serde::ser::Serialize for Vector<'a, T>
-where
-    T: 'a + Follow<'a>,
-    <T as Follow<'a>>::Inner: serde::ser::Serialize,
-{
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        use serde::ser::SerializeSeq;
-        let mut seq = serializer.serialize_seq(Some(self.len()))?;
-        for element in self {
-            seq.serialize_element(&element)?;
-        }
-        seq.end()
     }
 }

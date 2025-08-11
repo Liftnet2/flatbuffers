@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+use crate::EndianScalar;
 use crate::follow::Follow;
 use crate::vector::VectorIter;
-use crate::EndianScalar;
 use core::fmt::{Debug, Formatter, Result};
 use core::marker::PhantomData;
 use core::mem::size_of;
+use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Array<'a, T: 'a, const N: usize>(&'a [u8], PhantomData<T>);
 
 impl<'a, T: 'a, const N: usize> Debug for Array<'a, T, N>
@@ -89,7 +90,7 @@ impl<'a, T: Follow<'a> + 'a, const N: usize> Follow<'a> for Array<'a, T, N> {
     type Inner = Array<'a, T, N>;
     #[inline(always)]
     unsafe fn follow(buf: &'a [u8], loc: usize) -> Self::Inner {
-        Array::new(&buf[loc..loc + N * size_of::<T>()])
+        unsafe { Array::new(&buf[loc..loc + N * size_of::<T>()]) }
     }
 }
 
@@ -102,15 +103,17 @@ pub unsafe fn emplace_scalar_array<T: EndianScalar, const N: usize>(
     loc: usize,
     src: &[T; N],
 ) {
-    let mut buf_ptr = buf[loc..].as_mut_ptr();
-    for item in src.iter() {
-        let item_le = item.to_little_endian();
-        core::ptr::copy_nonoverlapping(
-            &item_le as *const T::Scalar as *const u8,
-            buf_ptr,
-            size_of::<T::Scalar>(),
-        );
-        buf_ptr = buf_ptr.add(size_of::<T::Scalar>());
+    unsafe {
+        let mut buf_ptr = buf[loc..].as_mut_ptr();
+        for item in src.iter() {
+            let item_le = item.to_little_endian();
+            core::ptr::copy_nonoverlapping(
+                &item_le as *const T::Scalar as *const u8,
+                buf_ptr,
+                size_of::<T::Scalar>(),
+            );
+            buf_ptr = buf_ptr.add(size_of::<T::Scalar>());
+        }
     }
 }
 
@@ -140,24 +143,5 @@ where
             ptr_i = ptr_i.add(1);
         }
         array.assume_init()
-    }
-}
-
-#[cfg(feature = "serialize")]
-impl<'a, T: 'a, const N: usize> serde::ser::Serialize for Array<'a, T, N>
-where
-    T: 'a + Follow<'a>,
-    <T as Follow<'a>>::Inner: serde::ser::Serialize,
-{
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        use serde::ser::SerializeSeq;
-        let mut seq = serializer.serialize_seq(Some(self.len()))?;
-        for element in self.iter() {
-            seq.serialize_element(&element)?;
-        }
-        seq.end()
     }
 }

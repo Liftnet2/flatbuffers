@@ -32,7 +32,9 @@ use std::slice::Iter;
     num_enum::TryFromPrimitive,
 )]
 #[repr(u8)]
+#[derive(Default)]
 pub enum BitWidth {
+    #[default]
     W8 = 0,
     W16 = 1,
     W32 = 2,
@@ -53,12 +55,6 @@ impl BitWidth {
             8 => Some(W64),
             _ => None,
         }
-    }
-}
-
-impl Default for BitWidth {
-    fn default() -> Self {
-        W8
     }
 }
 
@@ -107,7 +103,7 @@ pub fn align(buffer: &mut Vec<u8>, width: BitWidth) {
     let bytes = 1 << width as u8;
     let alignment = (bytes - buffer.len() % bytes) % bytes;
     // Profiling reveals the loop is faster than Vec::resize.
-    for _ in 0..alignment as usize {
+    for _ in 0..alignment {
         buffer.push(0);
     }
 }

@@ -138,20 +138,22 @@ impl EndianScalar for f64 {
 /// Caller must ensure `s.len() >= size_of::<T>()`
 #[inline]
 pub unsafe fn emplace_scalar<T: EndianScalar>(s: &mut [u8], x: T) {
-    let size = size_of::<T::Scalar>();
-    debug_assert!(
-        s.len() >= size,
-        "insufficient capacity for emplace_scalar, needed {} got {}",
-        size,
-        s.len()
-    );
+    unsafe {
+        let size = size_of::<T::Scalar>();
+        debug_assert!(
+            s.len() >= size,
+            "insufficient capacity for emplace_scalar, needed {} got {}",
+            size,
+            s.len()
+        );
 
-    let x_le = x.to_little_endian();
-    core::ptr::copy_nonoverlapping(
-        &x_le as *const T::Scalar as *const u8,
-        s.as_mut_ptr() as *mut u8,
-        size,
-    );
+        let x_le = x.to_little_endian();
+        core::ptr::copy_nonoverlapping(
+            &x_le as *const T::Scalar as *const u8,
+            s.as_mut_ptr() as *mut u8,
+            size,
+        );
+    }
 }
 
 /// Read an EndianScalar from the provided byte slice at the specified location.
@@ -160,7 +162,7 @@ pub unsafe fn emplace_scalar<T: EndianScalar>(s: &mut [u8], x: T) {
 /// Caller must ensure `s.len() >= loc + size_of::<T>()`.
 #[inline]
 pub unsafe fn read_scalar_at<T: EndianScalar>(s: &[u8], loc: usize) -> T {
-    read_scalar(&s[loc..])
+    unsafe { read_scalar(&s[loc..]) }
 }
 
 /// Read an EndianScalar from the provided byte slice. Performs endian
@@ -169,16 +171,18 @@ pub unsafe fn read_scalar_at<T: EndianScalar>(s: &[u8], loc: usize) -> T {
 /// Caller must ensure `s.len() > size_of::<T>()`.
 #[inline]
 pub unsafe fn read_scalar<T: EndianScalar>(s: &[u8]) -> T {
-    let size = size_of::<T::Scalar>();
-    debug_assert!(
-        s.len() >= size,
-        "insufficient capacity for emplace_scalar, needed {} got {}",
-        size,
-        s.len()
-    );
+    unsafe {
+        let size = size_of::<T::Scalar>();
+        debug_assert!(
+            s.len() >= size,
+            "insufficient capacity for emplace_scalar, needed {} got {}",
+            size,
+            s.len()
+        );
 
-    let mut mem = core::mem::MaybeUninit::<T::Scalar>::uninit();
-    // Since [u8] has alignment 1, we copy it into T which may have higher alignment.
-    core::ptr::copy_nonoverlapping(s.as_ptr(), mem.as_mut_ptr() as *mut u8, size);
-    T::from_little_endian(mem.assume_init())
+        let mut mem = core::mem::MaybeUninit::<T::Scalar>::uninit();
+        // Since [u8] has alignment 1, we copy it into T which may have higher alignment.
+        core::ptr::copy_nonoverlapping(s.as_ptr(), mem.as_mut_ptr() as *mut u8, size);
+        T::from_little_endian(mem.assume_init())
+    }
 }

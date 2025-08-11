@@ -36,9 +36,12 @@
 /// vectors can reduce the minimum element width and therefore bytes used.
 
 #[repr(u8)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, num_enum::TryFromPrimitive)]
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, num_enum::TryFromPrimitive, Default,
+)]
 pub enum FlexBufferType {
     /// Nulls are represented with `()` in Rust.
+    #[default]
     Null = 0,
     /// Variable width signed integer: `i8, i16, i32, i64`
     Int = 1,
@@ -103,12 +106,6 @@ pub enum FlexBufferType {
     Blob = 25,
 }
 use FlexBufferType::*;
-
-impl Default for FlexBufferType {
-    fn default() -> Self {
-        Null
-    }
-}
 
 macro_rules! is_ty {
     ($is_T: ident, $FTy: ident) => {

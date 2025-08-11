@@ -30,7 +30,7 @@ use crate::push::{Push, PushAlignment};
 use crate::read_scalar;
 use crate::table::Table;
 use crate::vector::Vector;
-use crate::vtable::{field_index_to_field_offset, VTable};
+use crate::vtable::{VTable, field_index_to_field_offset};
 use crate::vtable_writer::VTableWriter;
 
 /// Trait to implement custom allocation strategies for [`FlatBufferBuilder`].

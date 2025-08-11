@@ -43,7 +43,7 @@ impl<T: Push> Push for &T {
     type Output = T::Output;
 
     unsafe fn push(&self, dst: &mut [u8], written_len: usize) {
-        T::push(self, dst, written_len)
+        unsafe { T::push(self, dst, written_len) }
     }
 
     fn size() -> usize {
@@ -81,7 +81,9 @@ macro_rules! impl_push_for_endian_scalar {
 
             #[inline]
             unsafe fn push(&self, dst: &mut [u8], _written_len: usize) {
-                emplace_scalar::<$ty>(dst, *self);
+                unsafe {
+                    emplace_scalar::<$ty>(dst, *self);
+                }
             }
         }
     };
